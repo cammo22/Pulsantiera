@@ -4,8 +4,6 @@ Una demo di **10 effetti grafici** (confetti, fuochi d'artificio, matrix rain, r
 
 Clicca un pulsante → l'effetto parte dal centro del bottone. 🎉
 
-![preview](docs/preview.png)
-
 ## 🚀 Come usarlo
 
 Basta aprire `index.html` con un browser moderno (doppio click o trinalo nel browser). Non serve un server né Node.js.
