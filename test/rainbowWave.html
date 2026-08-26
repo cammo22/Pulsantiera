@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌊 Ripple — Test</title>
+<title>🌈 Arcobaleno — Test</title>
 <style>
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -170,12 +170,12 @@
 <body>
   <canvas id="fx"></canvas>
   <div class="wrap">
-    <h1>✨ 🌊 Ripple ✨</h1>
-    <p class="sub">Test individuale · effetto <code>ripple</code></p>
-    <button class="b4" id="go">🌊 Ripple</button>
+    <h1>✨ 🌈 Arcobaleno ✨</h1>
+    <p class="sub">Test individuale · effetto <code>rainbowWave</code></p>
+    <button class="b12" id="go">🌈 Arcobaleno</button>
     <label class="auto"><input type="checkbox" id="auto"> Auto (ogni 3s)</label>
   </div>
-  <div class="hint">File singolo · ripple · Canvas + CSS</div>
+  <div class="hint">File singolo · rainbowWave · Canvas + CSS</div>
 <script>
 const fx = document.getElementById('fx');
 const ctx = fx.getContext('2d');
@@ -278,29 +278,19 @@ function spawn(x,y,opt){
 }
 
 function illuminateButtons(except) { /* noop in test individuale */ }
-function ripple(x, y) {
-  const c = '#00c6ff';
-  for (let k = 0; k < 7; k++) {
+function rainbowWave(x, y) {
+  const colors = ['#ff5f6d','#ffd200','#38f9d7','#00c6ff','#f5576c','#7bffb0'];
+  for (let k = 0; k < 5; k++) {
     setTimeout(() => {
-      const r = document.createElement('div');
-      const size = 24;
-      const lw = Math.max(1, 3 - k * 0.3);
-      r.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;
-        border:${lw}px solid ${c};border-radius:50%;transform:translate(-50%,-50%) scale(1);
-        box-shadow:0 0 10px ${c}, inset 0 0 6px ${c};
-        pointer-events:none;z-index:999;
-        transition:transform 1s cubic-bezier(.2,.7,.2,1), opacity 1s;`;
-      document.body.appendChild(r);
-      requestAnimationFrame(() => { r.style.transform = `translate(-50%,-50%) scale(${(460/size)})`; r.style.opacity = '0'; });
-      setTimeout(() => r.remove(), 1050);
-    }, k * 130);
+      spawn(x + (k - 2) * 64, y, { count: 40, speed: 5, gravity: 0.13, size: 7, colors, decay: 0.013, up: 3, swayAmp: 0.09 });
+    }, k * 90);
   }
 }
 
 const go = document.getElementById('go');
 function trigger() {
   const r = go.getBoundingClientRect();
-  ripple(r.left + r.width/2, r.top + r.height/2);;
+  rainbowWave(r.left + r.width/2, r.top + r.height/2);;
 }
 go.addEventListener('click', trigger);
 document.getElementById('auto').addEventListener('change', function () {
