@@ -1,8 +1,11 @@
-# ✨ Pulsanti — 10 Effetti Grafici
+# ✨ Pulsantiera — Effetti Grafici Modulari
 
-Una demo di **10 effetti grafici** (confetti, fuochi d'artificio, matrix rain, ripple, supernova, vortice galattico, scarica neon, esplosione, aurora e magia pura) realizzata in **un unico file HTML**: Canvas 2D + CSS, zero dipendenze.
+Una demo di **12 effetti grafici** (confetti, fuochi d'artificio, matrix rain, ripple, supernova, vortice galattico, scarica neon, esplosione, aurora, magia pura, galaxy e arcobaleno) realizzata in **un unico file HTML**: Canvas 2D + CSS, zero dipendenze.
 
-Clicca un pulsante → l'effetto parte dal centro del bottone. 🎉
+- **Clicca un pulsante** → l'effetto parte dal centro del bottone. 🎉
+- **▶ Play Pulsantiera** → avvia la modalità *play* che cicla automaticamente tutti gli effetti (~1,4s ciascuno); clicca di nuovo per **⏸ Pause**.
+
+L'architettura è **modulare**: ogni effetto e pulsante è descritto da una sola riga nell'registry `EFFECTS`, quindi aggiungere nuovi effetti è facilissimo.
 
 ## 🚀 Come usarlo
 
@@ -26,24 +29,46 @@ index.html   ← tutto qui: HTML + CSS + JavaScript
 | 8 | 💥 Esplosione    | Bombarda tutto con particelle veloci |
 | 9 | 🌌 Aurora        | Cortine verdi/viola che salgono e ondeggiano |
 | 10 | ✨ Magia Pura   | Esplosione radiale di stelle che cadono (sparkler) |
+| 11 | 🪐 Galaxy       | Spirale di stelle con 3 bracci che ruotano |
+| 12 | 🌈 Arcobaleno    | Fontana arcobaleno che ondeggia sinuosamente |
+
+## ➕ Aggiungere un nuovo effetto
+
+Tutto gira attorno a una semplice **registry** (`EFFECTS`) e a una palette di gradiente (`GRADIENTS`). I pulsanti non sono scritti a mano: vengono generati automaticamente da `renderButtons()`, e la modalità *Play* sa già usare qualsiasi effetto registrato.
+
+Per aggiungere un nuovo pulsante/effetto servono **solo 2 passi**:
+
+```js
+// 1) la funzione dell'effetto (usa spawn() per le particelle, o disegna liberamente)
+function mioEffetto(x, y){
+  spawn(x, y, { count: 60, speed: 8, size: 10, colors:['#ff0','#08f'] });
+}
+
+// 2) registrala — il bottone e la modalità Play si occupano del resto
+EFFECTS.push({ id:'mioEffetto', label:'🚀 Mio Effetto', run: mioEffetto });
+```
+
+Regole pratici:
+- Gli effetti **basati sulle particelle** usano `spawn(x, y, {count, speed, size, colors, gravity, ...})`.
+- Gli effetti **liberi** (es. `matrix`, `ripple`) possono disegnare direttamente sul canvas o creare elementi DOM.
+- Il `id` deve essere univoco; `label` è il testo del bottone; `run` riceve coordinate `(x, y)` al centro del bottone cliccato.
 
 ## 🧪 Test (Playwright)
 
-Ogni effetto può essere testato singolarmente. Lo script Python `gen_tests.py` separa l'`index.html` in **10 file HTML individuali** dentro `test/`, ognuno con un bottone e una checkbox "Auto" (trigger ogni 3s).
+Ogni effetto può essere testato singolarmente. Lo script Python `gen_tests.py` separa l'`index.html` in **file HTML individuali** dentro `test/`, ognuno con un bottone e una checkbox "Auto" (trigger ogni 3s).
 
 ```bash
-# genera i 10 file di test in test/
+# genera i file di test in test/ (uno per effetto)
 python gen_tests.py
 
 # installa le dipendenze di test
 npm install
 
-# esegue i test su tutti gli effetti
-node test/run.js          # test combinati (index.html)
-node test/run_orig.js     # test singolo per effetto
+# esegue i test su tutti gli effetti (uno per volta, pagina pulita ciascuna)
+node test/run.js
 ```
 
-I test caricano la pagina via `file://`, simulano il click sul bottone e verificano che le particelle vengano generate senza errori JavaScript.
+I test caricano la pagina via `file://`, simulano il click sul bottone e verificano che l'effetto produca output (particelle / stream di Matrix / nodi DOM del ripple) **senza errori JavaScript**. Gli effetti senza particelle (`matrix`, `ripple`) vengono verificati con il loro meccanismo specifico.
 
 ## 🛠️ Stack
 
@@ -57,13 +82,13 @@ I test caricano la pagina via `file://`, simulano il click sul bottone e verific
 
 ```
 .
-├── index.html          # demo completa (i 10 pulsanti)
+├── index.html          # demo completa (i 12 pulsanti + modalità Play)
 ├── gen_tests.py        # separa ogni effetto in un file HTML di test
 ├── package.json        # dipendenza: playwright
 └── test/
-    ├── *.html          # 10 effetti singoli (generati da gen_tests.py)
-    ├── run.js          # test combinati
-    └── run_orig.js     # test singolo per effetto
+    ├── *.html          # effetti singoli (generati da gen_tests.py)
+    ├── run.js          # test per effetto (uno per pagina)
+    └── run_orig.js     # test combinato su index.html (click su ogni bottone)
 ```
 
 ## Licenza

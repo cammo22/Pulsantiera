@@ -226,6 +226,41 @@ function matrixLoop() {
 }""",
     "magic(cx, cy);",
   ),
+  "galaxy": (
+    "🪐 Galaxy", "b11",
+    """function galaxy(x, y) {
+  const colors = ['#a78bfa','#c4b5fd','#818cf8','#60a5fa','#f0abfc'];
+  let i = 0;
+  const iv = setInterval(() => {
+    for (let arm = 0; arm < 3; arm++) {
+      const a = i * 0.35 + (arm / 3) * Math.PI * 2;
+      const r = i * 1.9;
+      particles.push({
+        x: x + Math.cos(a) * r, y: y + Math.sin(a) * r,
+        vx: 0, vy: 0, gravity: 0, friction: 1,
+        life: 1, decay: 0.012, size: 5 + (i % 4),
+        color: colors[(i + arm) % colors.length], rot: 0, spin: 0.25, shape: 'star'
+      });
+    }
+    startLoop();
+    i++;
+    if (i > 72) clearInterval(iv);
+  }, 16);
+}""",
+    "galaxy(cx, cy);",
+  ),
+  "rainbowWave": (
+    "🌈 Arcobaleno", "b12",
+    """function rainbowWave(x, y) {
+  const colors = ['#ff5f6d','#ffd200','#38f9d7','#00c6ff','#f5576c','#7bffb0'];
+  for (let k = 0; k < 5; k++) {
+    setTimeout(() => {
+      spawn(x + (k - 2) * 64, y, { count: 40, speed: 5, gravity: 0.13, size: 7, colors, decay: 0.013, up: 3, swayAmp: 0.09 });
+    }, k * 90);
+  }
+}""",
+    "rainbowWave(cx, cy);",
+  ),
 }
 
 # --- template HTML ---

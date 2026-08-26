@@ -12,6 +12,7 @@
   "keywords": [],
   "type": "commonjs",
   "dependencies": {
-    "playwright": "^1.62.1"
+    "playwright": "^1.62.1",
+    "playwright-core": "^1.62.1"
   }
 }

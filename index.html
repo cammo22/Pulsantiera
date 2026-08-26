@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>10 Effetti Grafici ✨</title>
+<title>Pulsantiera · Effetti Grafici ✨</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -30,7 +30,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 26px;
+    gap: 20px;
     padding: 30px;
     z-index: 10;
   }
@@ -47,6 +47,22 @@
   }
 
   p.sub { opacity: .6; font-size: .9rem; margin-top: -12px; }
+
+  /* barra dei comandi (pulsante Play) */
+  .controls { display: flex; gap: 14px; }
+
+  #playBtn {
+    min-width: 200px;
+    font-size: 1rem;
+    background: linear-gradient(135deg,#ff8008,#ffc53f);
+    color: #201300;
+    box-shadow: 0 8px 26px rgba(255,160,0,.55);
+  }
+  #playBtn.playing {
+    background: linear-gradient(135deg,#ff4b2b,#ff4166);
+    color: #fff;
+    box-shadow: 0 8px 26px rgba(255,65,65,.6);
+  }
 
   .grid {
     display: grid;
@@ -86,7 +102,8 @@
   button:active { transform: scale(.92); }
   button:active::after { transform: scale(2.4); opacity: 0; }
 
-  /* gradienti individuali */
+  /* gradienti individuali (usati dai test in test/).
+     La pagina principale assegna i gradienti via JavaScript dalla palette GRADIENTS. */
   .b1 { background: linear-gradient(135deg,#ff5f6d,#ffc371); box-shadow:0 8px 24px rgba(255,95,109,.4); }
   .b2 { background: linear-gradient(135deg,#00c6ff,#0072ff); box-shadow:0 8px 24px rgba(0,114,255,.45); }
   .b3 { background: linear-gradient(135deg,#11998e,#38f9d7); box-shadow:0 8px 24px rgba(56,249,215,.4); }
@@ -97,6 +114,8 @@
   .b8 { background: linear-gradient(135deg,#ff4166,#ff4b2b); box-shadow:0 8px 24px rgba(255,75,43,.5); }
   .b9 { background: linear-gradient(135deg,#36d1dc,#5b86e5); box-shadow:0 8px 24px rgba(91,134,229,.45); }
   .b10{ background: linear-gradient(135deg,#f093fb,#f5576c); box-shadow:0 8px 24px rgba(245,87,108,.45); }
+  .b11{ background: linear-gradient(135deg,#a78bfa,#f0abfc); box-shadow:0 8px 24px rgba(167,139,250,.5); }
+  .b12{ background: linear-gradient(135deg,#ff5f6d,#ffd200); box-shadow:0 8px 24px rgba(255,95,109,.5); }
 
   /* effetto glitch sul testo */
   .glitch { animation: glitch .35s steps(2) 3; }
@@ -147,27 +166,23 @@
 <body>
   <canvas id="fx"></canvas>
   <div class="wrap">
-    <h1>✨ 10 Effetti Grafici ✨</h1>
-    <p class="sub">Clicca un pulsante e lasciarsi sorprendere</p>
-    <div class="grid" id="grid">
-      <button class="b1" data-fx="confetti">🎉 Confetti</button>
-      <button class="b2" data-fx="firework">🎆 Fuochi d'Artificio</button>
-      <button class="b3" data-fx="matrix">💻 Matrix Rain</button>
-      <button class="b4" data-fx="ripple">🌊 Ripple</button>
-      <button class="b5" data-fx="supernova">🚀 Supernova</button>
-      <button class="b6" data-fx="spiral">🌀 Vortice Galattico</button>
-      <button class="b7" data-fx="neon">⚡ Scarica Neon</button>
-      <button class="b8" data-fx="explode">💥 Esplosione</button>
-      <button class="b9" data-fx="aurora">🌌 Aurora</button>
-      <button class="b10" data-fx="magic">✨ Magia Pura</button>
+    <h1>✨ Pulsantiera · Effetti Grafici ✨</h1>
+    <p class="sub">Clicca un pulsante o premi "Play" per lo show completo</p>
+    <div class="controls">
+      <button id="playBtn" type="button">▶ Play Pulsantiera</button>
     </div>
+    <div class="grid" id="grid"></div>
   </div>
-  <div class="hint">Tutto in un unico file HTML · Canvas + CSS</div>
+  <div class="hint">Architettura modulare · Canvas + CSS · aggiungi effetti dalla REGISTRA</div>
 
 <script>
 /* ============================================================
    Motorino canvas shared per effetti particellari
-============================================================ */
+   --------------------------------------------------------
+   QUESTA SEZIONE NON DE CAMBIARE: gen_tests.py la estrae da
+   questo file (da "const fx" alla fine di spawn()) per creare
+   i test individuali. Tienila identica quando aggiungi effetti.
+ ============================================================ */
 const fx = document.getElementById('fx');
 const ctx = fx.getContext('2d');
 let W, H;
@@ -269,30 +284,21 @@ function spawn(x,y,opt){
 }
 
 /* ============================================================
-   Effetti speciali (non solo particelle)
-============================================================ */
-function ripple(x,y,color){
-  // onde concentriche che si espandono come sull'acqua
-  const c = color || '#00c6ff';
-  for (let k=0;k<7;k++){
-    setTimeout(()=>{
-      const r = document.createElement('div');
-      const size = 24;
-      // lo spessore del bordo diminuisce più l'onda si espande
-      const lw = Math.max(1, 3 - k*0.3);
-      r.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;
-        border:${lw}px solid ${c};border-radius:50%;transform:translate(-50%,-50%) scale(1);
-        box-shadow:0 0 10px ${c}, inset 0 0 6px ${c};
-        pointer-events:none;z-index:999;
-        transition:transform 1s cubic-bezier(.2,.7,.2,1), opacity 1s;`;
-      document.body.appendChild(r);
-      requestAnimationFrame(()=>{
-        r.style.transform = `translate(-50%,-50%) scale(${(460/size)})`;
-        r.style.opacity = '0';
-      });
-      setTimeout(()=>r.remove(),1050);
-    }, k*130);
-  }
+   KIT DI COMPOSIZIONE  — crea effetti ricchi con poche righe
+   --------------------------------------------------------
+   Ogni effetto è solo una funzione run(x, y). Puoi comporne di
+   nuovi combinando spawn() e temporizzatori. Opzioni utili di
+   spawn(): count, speed, gravity, up, size, decay, friction,
+   colors[], shape ('rect'|'star'|'ring'|'text'), swayAmp
+   (per ondeggiare), spread, spin.
+ ============================================================ */
+
+/* ============================================================
+   EFFETTI  — ogni effetto è una funzione standalone run(x, y)
+   (opz. firework accetta un 3° argomento: il pulsante).
+ ============================================================ */
+function confetti(x,y){
+  spawn(x,y,{count:90,speed:9,gravity:0.3,size:10,colors:['#ff5f6d','#ffd200','#38f9d7','#00c6ff','#f5576c'],up:7});
 }
 
 function firework(x,y,btn){
@@ -312,7 +318,7 @@ function firework(x,y,btn){
 
 function supernova(x,y){
   const colors = ['#ff9a00','#ffea00','#ff3c00','#fff','#ff7ee7'];
-  // nucleo bianco luminoso
+  // nucleo luminoso
   spawn(x,y,{count:40,speed:5,gravity:0,size:6,colors:['#fff'],decay:0.02});
   // onda d'urto (anello)
   spawn(x,y,{count:24,speed:2.5,gravity:0,size:16,colors:['#ffea00'],decay:0.02,shape:'ring'});
@@ -331,82 +337,6 @@ function supernova(x,y){
   setTimeout(()=>fl.remove(),720);
 }
 
-function spiral(x,y){
-  const colors = ['#667eea','#764ba2','#36d1dc','#5b86e5'];
-  let i=0;
-  const iv = setInterval(()=>{
-    const a = i*0.6;
-    const r = i*2.2;
-    particles.push({
-      x:x+Math.cos(a)*r, y:y+Math.sin(a)*r,
-      vx:0, vy:0, gravity:0, friction:1,
-      life:1, decay:0.02, size:6,
-      color:colors[i%colors.length], rot:0, spin:0.3, shape:'rect'
-    });
-    startLoop();
-    i++;
-    if(i>80) clearInterval(iv);
-  },16);
-}
-
-function neon(x,y){
-  const colors = ['#00f260','#0575e6','#00c6ff','#fff'];
-  for (let b=0;b<3;b++){
-    setTimeout(()=>{
-      spawn(x,y,{count:50,speed:9,gravity:0,size:5,colors,decay:0.02});
-    },b*80);
-  }
-}
-
-function explode(x,y){
-  const colors = ['#ff4166','#ff4b2b','#ff9a00','#fff'];
-  spawn(x,y,{count:90,speed:11,gravity:0.25,size:10,colors,decay:0.016});
-}
-
-function aurora(x,y){
-  // Cortine verdi/purple che SALONO e ONDEGGIANO orizzontalmente (effetto aurore)
-  const colors = ['#39ff14','#7bffb0','#00ff88','#c06bff','#b24bf3','#55efc4'];
-  for (let i=0;i<7;i++){
-    setTimeout(()=>{
-      spawn(
-        x + (Math.random()*440-220),
-        y + (Math.random()*80-40),
-        { count:24, speed:1.5, gravity:-0.02, size:26, colors, decay:0.0035, up:1, swayAmp:0.07+Math.random()*0.09 }
-      );
-    }, i*80);
-  }
-}
-
-function magic(x,y){
-  // Esplosione RADIALE di stelle multicolore che CADONO (effetto facchini/sparkler)
-  const colors = ['#f093fb','#f5576c','#ffd200','#7bffb0','#79c0ff'];
-  spawn(x,y,{count:90,speed:8,gravity:0.2,size:8,colors,decay:0.014,shape:'star'});
-}
-
-/* ============================================================
-   Effetto globale: i Fuochi d'Artificio illuminano gli altri pulsanti
-============================================================ */
-function illuminateButtons(except){
-  const btns = document.querySelectorAll('#grid button');
-  btns.forEach(b=>{
-   if (b===except) return;
-   b.style.transition = 'box-shadow .12s ease-out, transform .12s';
-   b.style.boxShadow = '0 0 26px 8px rgba(255,214,120,.95), inset 0 0 12px rgba(255,255,255,.45)';
-   setTimeout(()=>{ b.style.boxShadow=''; }, 400);
-  });
-}
-
-/* ============================================================
-   Collegamento pulsanti
-============================================================ */
-const effects = {
-  confetti: (x,y)=>spawn(x,y,{count:90,speed:9,gravity:0.3,size:10,colors:['#ff5f6d','#ffd200','#38f9d7','#00c6ff','#f5576c'],up:7}),
-  firework, supernova, matrix: matrixRain, ripple, spiral, neon, explode, aurora, magic
-};
-
-/* ============================================================
-    Matrix Rain: pioggia di caratteri full-screen (cade dall'alto)
-============================================================ */
 let matrixStreams = null;
 let matrixTimer = null;
 const MATRIX_FS = 20;      // dimensione carattere
@@ -473,32 +403,262 @@ function matrixLoop(){
   }
 }
 
-document.getElementById('grid').addEventListener('click', e=>{
-  const btn = e.target.closest('button');
-  if (!btn) return;
-  const name = btn.dataset.fx;
+function ripple(x,y,color){
+  // onde concentriche che si espandono come sull'acqua
+  const c = color || '#00c6ff';
+  for (let k=0;k<7;k++){
+    setTimeout(()=>{
+      const r = document.createElement('div');
+      const size = 24;
+      // lo spessore del bordo diminuisce più l'onda si espande
+      const lw = Math.max(1, 3 - k*0.3);
+      r.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;
+        border:${lw}px solid ${c};border-radius:50%;transform:translate(-50%,-50%) scale(1);
+        box-shadow:0 0 10px ${c}, inset 0 0 6px ${c};
+        pointer-events:none;z-index:999;
+        transition:transform 1s cubic-bezier(.2,.7,.2,1), opacity 1s;`;
+      document.body.appendChild(r);
+      requestAnimationFrame(()=>{
+        r.style.transform = `translate(-50%,-50%) scale(${(460/size)})`;
+        r.style.opacity = '0';
+      });
+      setTimeout(()=>r.remove(),1050);
+    }, k*130);
+  }
+}
+
+function spiral(x,y){
+  const colors = ['#667eea','#764ba2','#36d1dc','#5b86e5'];
+  let i=0;
+  const iv = setInterval(()=>{
+    const a = i*0.6;
+    const r = i*2.2;
+    particles.push({
+      x:x+Math.cos(a)*r, y:y+Math.sin(a)*r,
+      vx:0, vy:0, gravity:0, friction:1,
+      life:1, decay:0.02, size:6,
+      color:colors[i%colors.length], rot:0, spin:0.3, shape:'rect'
+    });
+    startLoop();
+    i++;
+    if(i>80) clearInterval(iv);
+  },16);
+}
+
+function neon(x,y){
+  const colors = ['#00f260','#0575e6','#00c6ff','#fff'];
+  for (let b=0;b<3;b++){
+    setTimeout(()=>{
+      spawn(x,y,{count:50,speed:9,gravity:0,size:5,colors,decay:0.02});
+    },b*80);
+  }
+}
+
+function explode(x,y){
+  const colors = ['#ff4166','#ff4b2b','#ff9a00','#fff'];
+  spawn(x,y,{count:90,speed:11,gravity:0.25,size:10,colors,decay:0.016});
+}
+
+function aurora(x,y){
+  // Cortine verdi/purple che SALONE e ONDEGGIANO orizzontalmente (effetto aurore)
+  const colors = ['#39ff14','#7bffb0','#00ff88','#c06bff','#b24bf3','#55efc4'];
+  for (let i=0;i<7;i++){
+    setTimeout(()=>{
+      spawn(
+        x + (Math.random()*440-220),
+        y + (Math.random()*80-40),
+        { count:24, speed:1.5, gravity:-0.02, size:26, colors, decay:0.0035, up:1, swayAmp:0.07+Math.random()*0.09 }
+      );
+    }, i*80);
+  }
+}
+
+function magic(x,y){
+  // Esplosione RADIALE di stelle multicolore che CADONO (effetto sparkler)
+  const colors = ['#f093fb','#f5576c','#ffd200','#7bffb0','#79c0ff'];
+  spawn(x,y,{count:90,speed:8,gravity:0.2,size:8,colors,decay:0.014,shape:'star'});
+}
+
+/* --- NUOVI EFFETTI (esempio di effetti più ricchi) --- */
+
+// 🪐 Galaxy: tre bracci a spirale di stelle che si avvolgono
+function galaxy(x,y){
+  const colors = ['#a78bfa','#c4b5fd','#818cf8','#60a5fa','#f0abfc'];
+  let i=0;
+  const iv = setInterval(()=>{
+    for (let arm=0; arm<3; arm++){
+      const a = i*0.35 + (arm/3)*Math.PI*2;
+      const r = i*1.9;
+      particles.push({
+        x:x+Math.cos(a)*r, y:y+Math.sin(a)*r,
+        vx:0, vy:0, gravity:0, friction:1,
+        life:1, decay:0.012, size:5+(i%4),
+        color:colors[(i+arm)%colors.length], rot:0, spin:0.25, shape:'star'
+      });
+    }
+    startLoop();
+    i++;
+    if(i>72) clearInterval(iv);
+  },16);
+}
+
+// 🌈 Arcobaleno: fontana arcobaleno che sale e ondeggia
+function rainbowWave(x,y){
+  const colors = ['#ff5f6d','#ffd200','#38f9d7','#00c6ff','#f5576c','#7bffb0'];
+  for (let k=0;k<5;k++){
+    setTimeout(()=>{
+      spawn(x+(k-2)*64, y, { count:40, speed:5, gravity:0.13, size:7, colors, decay:0.013, up:3, swayAmp:0.09 });
+    }, k*90);
+  }
+}
+
+/* ============================================================
+   Effetto globale: i Fuochi d'Artificio illuminano gli altri pulsanti
+ ============================================================ */
+function illuminateButtons(except){
+  const btns = document.querySelectorAll('#grid button');
+  btns.forEach(b=>{
+   if (b===except) return;
+   b.style.transition = 'box-shadow .12s ease-out, transform .12s';
+   b.style.boxShadow = '0 0 26px 8px rgba(255,214,120,.95), inset 0 0 12px rgba(255,255,255,.45)';
+   setTimeout(()=>{ b.style.boxShadow=''; }, 400);
+  });
+}
+
+/* ============================================================
+   REGISTRA DEGLI EFFETTI  ← IL CUORE MODULARE
+ --------------------------------------------------------
+   Per AGGIUNGERE un nuovo pulsante BASTA aggiungere UN oggetto:
+     EFFECTS.push({ id:'nome', label:'🎯 Nome', run: miaFunzione });
+   Nessun altro codice è necessario: i pulsanti vengono generati
+   automaticamente e la modalità Play sa già come usarli.
+ ============================================================ */
+const GRADIENTS = [
+  'linear-gradient(135deg,#ff5f6d,#ffc371)',
+  'linear-gradient(135deg,#00c6ff,#0072ff)',
+  'linear-gradient(135deg,#11998e,#38f9d7)',
+  'linear-gradient(135deg,#a52a5a,#ff5ecb)',
+  'linear-gradient(135deg,#f7971e,#ffd200)',
+  'linear-gradient(135deg,#667eea,#764ba2)',
+  'linear-gradient(135deg,#00f260,#0575e6)',
+  'linear-gradient(135deg,#ff4166,#ff4b2b)',
+  'linear-gradient(135deg,#36d1dc,#5b86e5)',
+  'linear-gradient(135deg,#f093fb,#f5576c)',
+  'linear-gradient(135deg,#a78bfa,#f0abfc)',   // 🪐 Galaxy
+  'linear-gradient(135deg,#ff5f6d,#ffd200)',   // 🌈 Arcobaleno
+];
+
+const EFFECTS = [
+  { id:'confetti',    label:'🎉 Confetti',       run: confetti },
+  { id:'firework',    label:'🎆 Fuochi d\'Artificio', run: firework },
+  { id:'matrix',      label:'💻 Matrix Rain',     run: matrixRain },
+  { id:'ripple',      label:'🌊 Ripple',          run: ripple },
+  { id:'supernova',   label:'🚀 Supernova',       run: supernova },
+  { id:'spiral',      label:'🌀 Vortice Galattico', run: spiral },
+  { id:'neon',        label:'⚡ Scarica Neon',    run: neon },
+  { id:'explode',     label:'💥 Esplosione',      run: explode },
+  { id:'aurora',      label:'🌌 Aurora',          run: aurora },
+  { id:'magic',       label:'✨ Magia Pura',      run: magic },
+  { id:'galaxy',      label:'🪐 Galaxy',          run: galaxy },
+  { id:'rainbowWave', label:'🌈 Arcobaleno',      run: rainbowWave },
+];
+
+// indice rapido id -> funzione (usato da launch())
+const effects = Object.fromEntries(EFFECTS.map(e => [e.id, e.run]));
+
+/* estrae un colore primario da un gradiente per il glow del bottone */
+function glowColor(grad){ const m = (grad||'').match(/#[0-9a-fA-F]{3,6}/); return m ? m[0] : '#ffffff'; }
+
+/* ============================================================
+   RENDER PULSANTI  — generati dalla REGISTRA (modulare)
+ ============================================================ */
+function renderButtons(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  EFFECTS.forEach((e, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.dataset.fx = e.id;
+    b.textContent = e.label;
+    const grad = GRADIENTS[i % GRADIENTS.length];
+    b.style.background = grad;
+    b.style.boxShadow = `0 8px 24px ${glowColor(grad)}55`; // #RRGGBBAA
+    grid.appendChild(b);
+  });
+}
+renderButtons();
+
+/* ============================================================
+   LANCIO EFFETTO  — unifica click manuale e modalità Play
+ ============================================================ */
+const ANIMS = {
+  explode: ['shake'],
+  firework: ['rainbow'], supernova: ['rainbow'],
+  ripple: ['pulse'],
+  matrix: ['glitch'],
+  aurora: ['bounce'],
+};
+
+function animText(btn, name){
+  const list = ANIMS[name] || [];
+  if (!list.length) return;
+  btn.classList.add(...list);
+  setTimeout(()=>btn.classList.remove(...list), 700);
+}
+
+function launch(btn, name){
   const rect = btn.getBoundingClientRect();
   const x = rect.left + rect.width/2;
   const y = rect.top + rect.height/2;
 
-  // ferma eventuali animazioni in corso (es. Matrix) prima del nuovo effetto
+  // ferma eventuali animazioni in corso prima del nuovo effetto
   stopAllAnimations();
 
   // effetti "di testo" sul pulsante stesso
-  if (name === 'explode') btn.classList.add('shake');
-  if (name === 'firework' || name==='supernova') btn.classList.add('rainbow');
-  if (name === 'ripple') btn.classList.add('pulse');
-  if (name === 'matrix') { btn.classList.add('glitch'); }
-  if (name === 'aurora') btn.classList.add('bounce');
-  setTimeout(()=>btn.classList.remove('shake','rainbow','pulse','glitch','bounce'),700);
+  animText(btn, name);
 
-  // particelle partono dal centro del pulsante verso l'alto
-  const off = y - rect.height/2 * (name==='matrix'?1:0.6);
-  // ogni effetto parte UNA SOLA volta; btn serve solo a firework (illumina gli altri pulsanti)
-  if (effects[name]) {
-    effects[name](x, off, name === 'firework' ? btn : undefined);
-  }
+  // le particelle partono dal centro del pulsante (Matrix dall'alto)
+  const off = y - rect.height/2 * (name === 'matrix' ? 1 : 0.6);
+  if (effects[name]) effects[name](x, off, name === 'firework' ? btn : undefined);
+}
+
+document.getElementById('grid').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  launch(btn, btn.dataset.fx);
 });
+
+/* ============================================================
+   MODALITÀ PLAY  — "mette in play la pulsantiera"
+ --------------------------------------------------------
+   Premi Play: ogni effetto viene eseguito a rotazione (ogni
+   1.4s) attraverso tutti i pulsanti. Premi Pause per fermare.
+ ============================================================ */
+let playTimer = null;
+let playIndex = 0;
+
+function togglePlay(){
+  const btn = document.getElementById('playBtn');
+  if (playTimer){
+    clearInterval(playTimer);
+    playTimer = null;
+    btn.textContent = '▶ Play Pulsantiera';
+    btn.classList.remove('playing');
+    return;
+  }
+  btn.textContent = '⏸ Pause';
+  btn.classList.add('playing');
+  playIndex = 0;
+  playTimer = setInterval(() => {
+    if (!EFFECTS.length) return;
+    const e = EFFECTS[playIndex % EFFECTS.length];
+    playIndex++;
+    const b = document.querySelector(`#grid button[data-fx="${e.id}"]`);
+    if (b) launch(b, e.id);
+  }, 1400);
+}
+
+document.getElementById('playBtn').addEventListener('click', togglePlay);
 </script>
 </body>
 </html>
