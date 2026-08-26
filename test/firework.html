@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎆 Fuochi d'Artificio — Test</title>
+<style>
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(circle at 30% 20%, #1a1035, #07060f 60%);
+    color: #e8e6ff;
+    overflow: hidden;
+  }
+
+  /* Canvas per gli effetti full-screen (sotto tutto) */
+  #fx {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  .wrap {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    padding: 30px;
+    z-index: 10;
+  }
+
+  h1 {
+    font-size: clamp(1.4rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: .5px;
+    background: linear-gradient(90deg,#ff7ee7,#79c0ff,#ffe259,#7bffb0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+  }
+
+  p.sub { opacity: .6; font-size: .9rem; margin-top: -12px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 18px;
+    width: min(940px, 94vw);
+  }
+
+  button {
+    position: relative;
+    padding: 16px 14px;
+    font-size: .95rem;
+    font-weight: 700;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    overflow: hidden;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform .12s ease, box-shadow .25s ease;
+    user-select: none;
+  }
+
+  button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,.14);
+    transform: scale(0);
+    border-radius: inherit;
+    transition: transform .4s ease;
+  }
+  button:active { transform: scale(.92); }
+  button:active::after { transform: scale(2.4); opacity: 0; }
+
+  /* gradienti individuali */
+  .b1 { background: linear-gradient(135deg,#ff5f6d,#ffc371); box-shadow:0 8px 24px rgba(255,95,109,.4); }
+  .b2 { background: linear-gradient(135deg,#00c6ff,#0072ff); box-shadow:0 8px 24px rgba(0,114,255,.45); }
+  .b3 { background: linear-gradient(135deg,#11998e,#38f9d7); box-shadow:0 8px 24px rgba(56,249,215,.4); }
+  .b4 { background: linear-gradient(135deg,#a52a5a,#ff5ecb); box-shadow:0 8px 24px rgba(255,94,203,.45); }
+  .b5 { background: linear-gradient(135deg,#f7971e,#ffd200); color:#2a1c00; box-shadow:0 8px 24px rgba(255,210,0,.4); }
+  .b6 { background: linear-gradient(135deg,#667eea,#764ba2); box-shadow:0 8px 24px rgba(118,75,162,.5); }
+  .b7 { background: linear-gradient(135deg,#00f260,#0575e6); box-shadow:0 8px 24px rgba(5,117,230,.45); }
+  .b8 { background: linear-gradient(135deg,#ff4166,#ff4b2b); box-shadow:0 8px 24px rgba(255,75,43,.5); }
+  .b9 { background: linear-gradient(135deg,#36d1dc,#5b86e5); box-shadow:0 8px 24px rgba(91,134,229,.45); }
+  .b10{ background: linear-gradient(135deg,#f093fb,#f5576c); box-shadow:0 8px 24px rgba(245,87,108,.45); }
+
+  /* effetto glitch sul testo */
+  .glitch { animation: glitch .35s steps(2) 3; }
+  @keyframes glitch {
+    0% { transform: translate(0); filter: hue-rotate(0); }
+    25% { transform: translate(-3px,1px); filter: hue-rotate(90deg); }
+    50% { transform: translate(3px,-2px); filter: hue-rotate(-90deg); }
+    75% { transform: translate(-2px,1px); filter: hue-rotate(45deg); }
+    100% { transform: translate(0); filter: hue-rotate(0); }
+  }
+
+  /* shake */
+  .shake { animation: shake .5s; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-10px) rotate(-3deg)}
+    40%{transform:translateX(9px) rotate(3deg)}
+    60%{transform:translateX(-7px) rotate(-2deg)}
+    80%{transform:translateX(5px) rotate(2deg)}
+  }
+
+  /* pulse glow */
+  .pulse { animation: pulse .6s; }
+  @keyframes pulse {
+    0%{box-shadow:0 0 0 0 rgba(255,255,255,.8);}
+    100%{box-shadow:0 0 0 40px rgba(255,255,255,0);}
+  }
+
+  /* rainbow cycle */
+  .rainbow { animation: rainbow .8s linear; }
+  @keyframes rainbow {
+    0%{filter:hue-rotate(0deg) saturate(3);}
+    100%{filter:hue-rotate(360deg) saturate(3);}
+  }
+
+  /* bounce */
+  .bounce { animation: bounce .6s; }
+  @keyframes bounce {
+    0%,100%{transform:translateY(0)}
+    30%{transform:translateY(-26px)}
+    60%{transform:translateY(-8px)}
+    80%{transform:translateY(-14px)}
+  }
+
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); font-size:.75rem; opacity:.4; z-index:10;}
+
+.auto { opacity: .6; font-size: .8rem; margin-top: -14px; }
+.auto input { vertical-align: middle; }
+</style>
+</head>
+<body>
+  <canvas id="fx"></canvas>
+  <div class="wrap">
+    <h1>✨ 🎆 Fuochi d'Artificio ✨</h1>
+    <p class="sub">Test individuale · effetto <code>firework</code></p>
+    <button class="b2" id="go">🎆 Fuochi d'Artificio</button>
+    <label class="auto"><input type="checkbox" id="auto"> Auto (ogni 3s)</label>
+  </div>
+  <div class="hint">File singolo · firework · Canvas + CSS</div>
+<script>
+const fx = document.getElementById('fx');
+const ctx = fx.getContext('2d');
+let W, H;
+function resize(){ W = fx.width = innerWidth; H = fx.height = innerHeight; }
+resize();
+addEventListener('resize', resize);
+
+let particles = [];
+let rafId = null;
+
+function loop(){
+  // sfuma delicatamente il canvas mostrando lo sfondo (gradiente) dietro,
+  // così lo schermo non diventa MAI nero quando l'effetto finisce.
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  ctx.fillRect(0,0,W,H);
+
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = particles.length - 1; i >= 0; i--){
+    const p = particles[i];
+    if (p.swayAmp){ p.vx += Math.sin(p.swayPhase||0)*p.swayAmp; p.swayPhase=(p.swayPhase||0)+0.06; }
+    p.x += p.vx; p.y += p.vy;
+    p.vy += p.gravity || 0;
+    p.vx *= p.friction || 1;
+    p.life -= p.decay;
+    p.rot += p.spin;
+    if (p.life <= 0){ particles.splice(i,1); continue; }
+    const a = Math.max(0, p.life);
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = p.color;
+    if (p.shape === 'text'){
+      ctx.font = p.size + 'px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.glyph, 0, 0);
+    } else if (p.shape === 'star') drawStar(ctx, 0, 0, 5, p.size, p.size/2);
+    else if (p.shape === 'ring'){
+      ctx.strokeStyle = p.color; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(0,0,p.size*(1-(1-a)),0,Math.PI*2); ctx.stroke();
+    } else {
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+    }
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+  if (particles.length){
+    rafId = requestAnimationFrame(loop);
+  } else {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
+
+/* ferma qualsiasi animazione in corso prima di un nuovo effetto */
+function stopAllAnimations(){
+  if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
+}
+
+function startLoop(){
+  if (!rafId) loop();
+}
+
+function drawStar(ctx, cx, cy, spikes, outer, inner){
+  let rot = Math.PI/2*3, step = Math.PI/spikes;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy-outer);
+  for (let i=0;i<spikes;i++){
+    ctx.lineTo(cx+Math.cos(rot)*outer, cy+Math.sin(rot)*outer); rot+=step;
+    ctx.lineTo(cx+Math.cos(rot)*inner, cy+Math.sin(rot)*inner); rot+=step;
+  }
+  ctx.closePath(); ctx.fill();
+}
+
+function spawn(x,y,opt){
+  const n = opt.count || 40;
+  // cap globale: evita troppe particelle → niente blocchi/lag
+  const MAX_P = 550;
+  for (let i=0;i<n;i++){
+    if (particles.length >= MAX_P) break;
+    const ang = Math.random()*Math.PI*2;
+    const spd = (opt.speed||6) * (0.3 + Math.random());
+    particles.push({
+      x, y,
+      vx: Math.cos(ang)*spd*(opt.spread||1),
+      vy: Math.sin(ang)*spd*(opt.spread||1) - (opt.up||0),
+      gravity: opt.gravity ?? 0.15,
+      friction: opt.friction ?? 0.985,
+      life: 1, decay: opt.decay || (0.008 + Math.random()*0.012),
+      size: (opt.size||8) * (0.5+Math.random()),
+      color: opt.colors ? opt.colors[Math.floor(Math.random()*opt.colors.length)] : '#fff',
+      rot: 0, spin: (Math.random()-.5)*0.3,
+      shape: opt.shape || 'rect'
+    });
+  }
+  startLoop();
+}
+
+function illuminateButtons(except) { /* noop in test individuale */ }
+function firework(x, y) {
+  const colors = ['#ff5f6d','#00c6ff','#38f9d7','#ffd200','#f5576c','#7bffb0'];
+  spawn(x, y, { count: 60, speed: 7, gravity: 0.18, size: 6, colors, decay: 0.014, shape: 'rect' });
+  const fl = document.createElement('div');
+  fl.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:12px;height:12px;
+    background:#fff;border-radius:50%;transform:translate(-50%,-50%);
+    box-shadow:0 0 40px 20px #fff;pointer-events:none;z-index:998;transition:.3s;`;
+  document.body.appendChild(fl);
+  requestAnimationFrame(() => { fl.style.opacity = '0'; });
+  setTimeout(() => fl.remove(), 320);
+}
+
+const go = document.getElementById('go');
+function trigger() {
+  const r = go.getBoundingClientRect();
+  firework(r.left + r.width/2, r.top + r.height/2);;
+}
+go.addEventListener('click', trigger);
+document.getElementById('auto').addEventListener('change', function () {
+  if (this.checked) window._iv = setInterval(trigger, 3000);
+  else clearInterval(window._iv);
+});
+trigger(); // mostra un'subito all'apertura
+
+</script>
+</body>
+</html>

@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 Effetti Grafici ✨</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(circle at 30% 20%, #1a1035, #07060f 60%);
+    color: #e8e6ff;
+    overflow: hidden;
+  }
+
+  /* Canvas per gli effetti full-screen (sotto tutto) */
+  #fx {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  .wrap {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    padding: 30px;
+    z-index: 10;
+  }
+
+  h1 {
+    font-size: clamp(1.4rem, 4vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: .5px;
+    background: linear-gradient(90deg,#ff7ee7,#79c0ff,#ffe259,#7bffb0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-align: center;
+  }
+
+  p.sub { opacity: .6; font-size: .9rem; margin-top: -12px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 18px;
+    width: min(940px, 94vw);
+  }
+
+  button {
+    position: relative;
+    padding: 16px 14px;
+    font-size: .95rem;
+    font-weight: 700;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    overflow: hidden;
+    min-height: 78px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    transition: transform .12s ease, box-shadow .25s ease;
+    user-select: none;
+  }
+
+  button::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,.14);
+    transform: scale(0);
+    border-radius: inherit;
+    transition: transform .4s ease;
+  }
+  button:active { transform: scale(.92); }
+  button:active::after { transform: scale(2.4); opacity: 0; }
+
+  /* gradienti individuali */
+  .b1 { background: linear-gradient(135deg,#ff5f6d,#ffc371); box-shadow:0 8px 24px rgba(255,95,109,.4); }
+  .b2 { background: linear-gradient(135deg,#00c6ff,#0072ff); box-shadow:0 8px 24px rgba(0,114,255,.45); }
+  .b3 { background: linear-gradient(135deg,#11998e,#38f9d7); box-shadow:0 8px 24px rgba(56,249,215,.4); }
+  .b4 { background: linear-gradient(135deg,#a52a5a,#ff5ecb); box-shadow:0 8px 24px rgba(255,94,203,.45); }
+  .b5 { background: linear-gradient(135deg,#f7971e,#ffd200); color:#2a1c00; box-shadow:0 8px 24px rgba(255,210,0,.4); }
+  .b6 { background: linear-gradient(135deg,#667eea,#764ba2); box-shadow:0 8px 24px rgba(118,75,162,.5); }
+  .b7 { background: linear-gradient(135deg,#00f260,#0575e6); box-shadow:0 8px 24px rgba(5,117,230,.45); }
+  .b8 { background: linear-gradient(135deg,#ff4166,#ff4b2b); box-shadow:0 8px 24px rgba(255,75,43,.5); }
+  .b9 { background: linear-gradient(135deg,#36d1dc,#5b86e5); box-shadow:0 8px 24px rgba(91,134,229,.45); }
+  .b10{ background: linear-gradient(135deg,#f093fb,#f5576c); box-shadow:0 8px 24px rgba(245,87,108,.45); }
+
+  /* effetto glitch sul testo */
+  .glitch { animation: glitch .35s steps(2) 3; }
+  @keyframes glitch {
+    0% { transform: translate(0); filter: hue-rotate(0); }
+    25% { transform: translate(-3px,1px); filter: hue-rotate(90deg); }
+    50% { transform: translate(3px,-2px); filter: hue-rotate(-90deg); }
+    75% { transform: translate(-2px,1px); filter: hue-rotate(45deg); }
+    100% { transform: translate(0); filter: hue-rotate(0); }
+  }
+
+  /* shake */
+  .shake { animation: shake .5s; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-10px) rotate(-3deg)}
+    40%{transform:translateX(9px) rotate(3deg)}
+    60%{transform:translateX(-7px) rotate(-2deg)}
+    80%{transform:translateX(5px) rotate(2deg)}
+  }
+
+  /* pulse glow */
+  .pulse { animation: pulse .6s; }
+  @keyframes pulse {
+    0%{box-shadow:0 0 0 0 rgba(255,255,255,.8);}
+    100%{box-shadow:0 0 0 40px rgba(255,255,255,0);}
+  }
+
+  /* rainbow cycle */
+  .rainbow { animation: rainbow .8s linear; }
+  @keyframes rainbow {
+    0%{filter:hue-rotate(0deg) saturate(3);}
+    100%{filter:hue-rotate(360deg) saturate(3);}
+  }
+
+  /* bounce */
+  .bounce { animation: bounce .6s; }
+  @keyframes bounce {
+    0%,100%{transform:translateY(0)}
+    30%{transform:translateY(-26px)}
+    60%{transform:translateY(-8px)}
+    80%{transform:translateY(-14px)}
+  }
+
+  .hint { position: fixed; bottom: 14px; left: 50%; transform: translateX(-50%); font-size:.75rem; opacity:.4; z-index:10;}
+</style>
+</head>
+<body>
+  <canvas id="fx"></canvas>
+  <div class="wrap">
+    <h1>✨ 10 Effetti Grafici ✨</h1>
+    <p class="sub">Clicca un pulsante e lasciarsi sorprendere</p>
+    <div class="grid" id="grid">
+      <button class="b1" data-fx="confetti">🎉 Confetti</button>
+      <button class="b2" data-fx="firework">🎆 Fuochi d'Artificio</button>
+      <button class="b3" data-fx="matrix">💻 Matrix Rain</button>
+      <button class="b4" data-fx="ripple">🌊 Ripple</button>
+      <button class="b5" data-fx="supernova">🚀 Supernova</button>
+      <button class="b6" data-fx="spiral">🌀 Vortice Galattico</button>
+      <button class="b7" data-fx="neon">⚡ Scarica Neon</button>
+      <button class="b8" data-fx="explode">💥 Esplosione</button>
+      <button class="b9" data-fx="aurora">🌌 Aurora</button>
+      <button class="b10" data-fx="magic">✨ Magia Pura</button>
+    </div>
+  </div>
+  <div class="hint">Tutto in un unico file HTML · Canvas + CSS</div>
+
+<script>
+/* ============================================================
+   Motorino canvas shared per effetti particellari
+============================================================ */
+const fx = document.getElementById('fx');
+const ctx = fx.getContext('2d');
+let W, H;
+function resize(){ W = fx.width = innerWidth; H = fx.height = innerHeight; }
+resize();
+addEventListener('resize', resize);
+
+let particles = [];
+let rafId = null;
+
+function loop(){
+  // sfuma delicatamente il canvas mostrando lo sfondo (gradiente) dietro,
+  // così lo schermo non diventa MAI nero quando l'effetto finisce.
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(0,0,0,0.12)';
+  ctx.fillRect(0,0,W,H);
+
+  ctx.globalCompositeOperation = 'lighter';
+  for (let i = particles.length - 1; i >= 0; i--){
+    const p = particles[i];
+    if (p.swayAmp){ p.vx += Math.sin(p.swayPhase||0)*p.swayAmp; p.swayPhase=(p.swayPhase||0)+0.06; }
+    p.x += p.vx; p.y += p.vy;
+    p.vy += p.gravity || 0;
+    p.vx *= p.friction || 1;
+    p.life -= p.decay;
+    p.rot += p.spin;
+    if (p.life <= 0){ particles.splice(i,1); continue; }
+    const a = Math.max(0, p.life);
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = p.color;
+    if (p.shape === 'text'){
+      ctx.font = p.size + 'px monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(p.glyph, 0, 0);
+    } else if (p.shape === 'star') drawStar(ctx, 0, 0, 5, p.size, p.size/2);
+    else if (p.shape === 'ring'){
+      ctx.strokeStyle = p.color; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(0,0,p.size*(1-(1-a)),0,Math.PI*2); ctx.stroke();
+    } else {
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+    }
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+  if (particles.length){
+    rafId = requestAnimationFrame(loop);
+  } else {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
+
+/* ferma qualsiasi animazione in corso prima di un nuovo effetto */
+function stopAllAnimations(){
+  if (rafId){ cancelAnimationFrame(rafId); rafId = null; }
+}
+
+function startLoop(){
+  if (!rafId) loop();
+}
+
+function drawStar(ctx, cx, cy, spikes, outer, inner){
+  let rot = Math.PI/2*3, step = Math.PI/spikes;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy-outer);
+  for (let i=0;i<spikes;i++){
+    ctx.lineTo(cx+Math.cos(rot)*outer, cy+Math.sin(rot)*outer); rot+=step;
+    ctx.lineTo(cx+Math.cos(rot)*inner, cy+Math.sin(rot)*inner); rot+=step;
+  }
+  ctx.closePath(); ctx.fill();
+}
+
+function spawn(x,y,opt){
+  const n = opt.count || 40;
+  // cap globale: evita troppe particelle → niente blocchi/lag
+  const MAX_P = 550;
+  for (let i=0;i<n;i++){
+    if (particles.length >= MAX_P) break;
+    const ang = Math.random()*Math.PI*2;
+    const spd = (opt.speed||6) * (0.3 + Math.random());
+    particles.push({
+      x, y,
+      vx: Math.cos(ang)*spd*(opt.spread||1),
+      vy: Math.sin(ang)*spd*(opt.spread||1) - (opt.up||0),
+      gravity: opt.gravity ?? 0.15,
+      friction: opt.friction ?? 0.985,
+      life: 1, decay: opt.decay || (0.008 + Math.random()*0.012),
+      size: (opt.size||8) * (0.5+Math.random()),
+      color: opt.colors ? opt.colors[Math.floor(Math.random()*opt.colors.length)] : '#fff',
+      rot: 0, spin: (Math.random()-.5)*0.3,
+      shape: opt.shape || 'rect'
+    });
+  }
+  startLoop();
+}
+
+/* ============================================================
+   Effetti speciali (non solo particelle)
+============================================================ */
+function ripple(x,y,color){
+  // onde concentriche che si espandono come sull'acqua
+  const c = color || '#00c6ff';
+  for (let k=0;k<7;k++){
+    setTimeout(()=>{
+      const r = document.createElement('div');
+      const size = 24;
+      // lo spessore del bordo diminuisce più l'onda si espande
+      const lw = Math.max(1, 3 - k*0.3);
+      r.style.cssText = `position:fixed;left:${x}px;top:${y}px;width:${size}px;height:${size}px;
+        border:${lw}px solid ${c};border-radius:50%;transform:translate(-50%,-50%) scale(1);
+        box-shadow:0 0 10px ${c}, inset 0 0 6px ${c};
+        pointer-events:none;z-index:999;
+        transition:transform 1s cubic-bezier(.2,.7,.2,1), opacity 1s;`;
+      document.body.appendChild(r);
+      requestAnimationFrame(()=>{
+        r.style.transform = `translate(-50%,-50%) scale(${(460/size)})`;
+        r.style.opacity = '0';
+      });
+      setTimeout(()=>r.remove(),1050);
+    }, k*130);
+  }
+}
+
+function firework(x,y,btn){
+  const colors = ['#ff5f6d','#00c6ff','#38f9d7','#ffd200','#f5576c','#7bffb0'];
+  spawn(x,y,{count:60,speed:7,gravity:0.18,size:6,colors,decay:0.014,shape:'rect'});
+  // i fuochi illuminano anche gli altri pulsanti
+  if (btn) illuminateButtons(btn);
+  // flash bianco
+  const fl = document.createElement('div');
+  fl.style.cssText=`position:fixed;left:${x}px;top:${y}px;width:12px;height:12px;
+    background:#fff;border-radius:50%;transform:translate(-50%,-50%);
+    box-shadow:0 0 40px 20px #fff;pointer-events:none;z-index:998;transition:.3s;`;
+  document.body.appendChild(fl);
+  requestAnimationFrame(()=>{fl.style.opacity='0';});
+  setTimeout(()=>fl.remove(),320);
+}
+
+function supernova(x,y){
+  const colors = ['#ff9a00','#ffea00','#ff3c00','#fff','#ff7ee7'];
+  // nucleo bianco luminoso
+  spawn(x,y,{count:40,speed:5,gravity:0,size:6,colors:['#fff'],decay:0.02});
+  // onda d'urto (anello)
+  spawn(x,y,{count:24,speed:2.5,gravity:0,size:16,colors:['#ffea00'],decay:0.02,shape:'ring'});
+  // explosione principale
+  spawn(x,y,{count:220,speed:16,gravity:0.05,size:11,colors,decay:0.007,shape:'star'});
+  // seconda onda ritardata per più drammaticità
+  setTimeout(()=>spawn(x,y,{count:130,speed:9,gravity:0.12,size:8,colors,decay:0.011,shape:'star'}),150);
+  // flash centrale radiale
+  const fl = document.createElement('div');
+  fl.style.cssText=`position:fixed;left:${x}px;top:${y}px;width:24px;height:24px;border-radius:50%;
+    background:radial-gradient(circle,#fff 0%,rgba(255,234,0,.95) 25%,rgba(255,154,0,.4) 55%,rgba(255,154,0,0) 75%);
+    transform:translate(-50%,-50%) scale(1);pointer-events:none;z-index:996;
+    transition:scale .7s ease-out, opacity .7s;`;
+  document.body.appendChild(fl);
+  requestAnimationFrame(()=>{fl.style.transform=`translate(-50%,-50%) scale(22)`;fl.style.opacity='0';});
+  setTimeout(()=>fl.remove(),720);
+}
+
+function spiral(x,y){
+  const colors = ['#667eea','#764ba2','#36d1dc','#5b86e5'];
+  let i=0;
+  const iv = setInterval(()=>{
+    const a = i*0.6;
+    const r = i*2.2;
+    particles.push({
+      x:x+Math.cos(a)*r, y:y+Math.sin(a)*r,
+      vx:0, vy:0, gravity:0, friction:1,
+      life:1, decay:0.02, size:6,
+      color:colors[i%colors.length], rot:0, spin:0.3, shape:'rect'
+    });
+    startLoop();
+    i++;
+    if(i>80) clearInterval(iv);
+  },16);
+}
+
+function neon(x,y){
+  const colors = ['#00f260','#0575e6','#00c6ff','#fff'];
+  for (let b=0;b<3;b++){
+    setTimeout(()=>{
+      spawn(x,y,{count:50,speed:9,gravity:0,size:5,colors,decay:0.02});
+    },b*80);
+  }
+}
+
+function explode(x,y){
+  const colors = ['#ff4166','#ff4b2b','#ff9a00','#fff'];
+  spawn(x,y,{count:90,speed:11,gravity:0.25,size:10,colors,decay:0.016});
+}
+
+function aurora(x,y){
+  // Cortine verdi/purple che SALONO e ONDEGGIANO orizzontalmente (effetto aurore)
+  const colors = ['#39ff14','#7bffb0','#00ff88','#c06bff','#b24bf3','#55efc4'];
+  for (let i=0;i<7;i++){
+    setTimeout(()=>{
+      spawn(
+        x + (Math.random()*440-220),
+        y + (Math.random()*80-40),
+        { count:24, speed:1.5, gravity:-0.02, size:26, colors, decay:0.0035, up:1, swayAmp:0.07+Math.random()*0.09 }
+      );
+    }, i*80);
+  }
+}
+
+function magic(x,y){
+  // Esplosione RADIALE di stelle multicolore che CADONO (effetto facchini/sparkler)
+  const colors = ['#f093fb','#f5576c','#ffd200','#7bffb0','#79c0ff'];
+  spawn(x,y,{count:90,speed:8,gravity:0.2,size:8,colors,decay:0.014,shape:'star'});
+}
+
+/* ============================================================
+   Effetto globale: i Fuochi d'Artificio illuminano gli altri pulsanti
+============================================================ */
+function illuminateButtons(except){
+  const btns = document.querySelectorAll('#grid button');
+  btns.forEach(b=>{
+   if (b===except) return;
+   b.style.transition = 'box-shadow .12s ease-out, transform .12s';
+   b.style.boxShadow = '0 0 26px 8px rgba(255,214,120,.95), inset 0 0 12px rgba(255,255,255,.45)';
+   setTimeout(()=>{ b.style.boxShadow=''; }, 400);
+  });
+}
+
+/* ============================================================
+   Collegamento pulsanti
+============================================================ */
+const effects = {
+  confetti: (x,y)=>spawn(x,y,{count:90,speed:9,gravity:0.3,size:10,colors:['#ff5f6d','#ffd200','#38f9d7','#00c6ff','#f5576c'],up:7}),
+  firework, supernova, matrix: matrixRain, ripple, spiral, neon, explode, aurora, magic
+};
+
+/* ============================================================
+    Matrix Rain: pioggia di caratteri full-screen (cade dall'alto)
+============================================================ */
+let matrixStreams = null;
+let matrixTimer = null;
+const MATRIX_FS = 20;      // dimensione carattere
+const MATRIX_RUN_MS = 8000;
+
+function matrixRain(x,y){
+  const glyphs = 'アカサタナ0123456789ABCDEFλ#$%&*@漢字猫';
+  const cols = Math.max(1, Math.ceil(innerWidth / MATRIX_FS));
+  matrixStreams = [];
+  for (let c=0;c<cols;c++){
+    matrixStreams.push({
+      x: c*MATRIX_FS + MATRIX_FS/2,
+      speed: 4 + Math.random()*6,
+      offset: -Math.random()*innerHeight,          // posizione verticale della testa
+      len: 14 + (Math.random()*18|0),              // lunghezza scia
+      glyphs: Array.from({length:50}, ()=> glyphs[(Math.random()*glyphs.length)|0])
+    });
+  }
+  stopAllAnimations();                          // libera rafId per il nuovo loop
+  if(!rafId){ matrixLoop(); }
+  clearTimeout(matrixTimer);
+  matrixTimer = setTimeout(()=>{ matrixStreams=null; }, MATRIX_RUN_MS);
+}
+
+function matrixLoop(){
+  // scia sfumante (rivela lo sfondo)
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = 'rgba(0,0,0,0.13)';
+  ctx.fillRect(0,0,W,H);
+
+  if (matrixStreams){
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.font = MATRIX_FS + 'px monospace';
+    for (const s of matrixStreams){
+      s.offset += s.speed;
+      if (s.offset - s.len*MATRIX_FS > innerHeight){   // testa uscita sotto -> ricomincia
+        s.offset = -Math.random()*300;
+        s.speed = 4 + Math.random()*6;
+      }
+      for (let t=s.len-1; t>=0; t--){
+        const yy = s.offset - t*MATRIX_FS;
+        if (yy < -MATRIX_FS || yy > innerHeight + MATRIX_FS) continue;
+        const ch = s.glyphs[(((s.len-1-t) % s.glyphs.length)+s.glyphs.length) % s.glyphs.length];
+        if (t===0){
+          ctx.fillStyle = '#eaffea';
+          ctx.shadowColor = '#7dff7a'; ctx.shadowBlur = 14;
+        } else {
+          ctx.shadowBlur = 0;
+          const g = 0.85 - (t/s.len)*0.7;
+          ctx.fillStyle = 'rgba(57,255,20,' + Math.max(0.08,g) + ')';
+        }
+        ctx.fillText(ch, s.x, yy);
+      }
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  if (matrixStreams){
+    rafId = requestAnimationFrame(matrixLoop);
+  } else {
+    cancelAnimationFrame(rafId);
+    rafId = null;
+  }
+}
+
+document.getElementById('grid').addEventListener('click', e=>{
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  const name = btn.dataset.fx;
+  const rect = btn.getBoundingClientRect();
+  const x = rect.left + rect.width/2;
+  const y = rect.top + rect.height/2;
+
+  // ferma eventuali animazioni in corso (es. Matrix) prima del nuovo effetto
+  stopAllAnimations();
+
+  // effetti "di testo" sul pulsante stesso
+  if (name === 'explode') btn.classList.add('shake');
+  if (name === 'firework' || name==='supernova') btn.classList.add('rainbow');
+  if (name === 'ripple') btn.classList.add('pulse');
+  if (name === 'matrix') { btn.classList.add('glitch'); }
+  if (name === 'aurora') btn.classList.add('bounce');
+  setTimeout(()=>btn.classList.remove('shake','rainbow','pulse','glitch','bounce'),700);
+
+  // particelle partono dal centro del pulsante verso l'alto
+  const off = y - rect.height/2 * (name==='matrix'?1:0.6);
+  // ogni effetto parte UNA SOLA volta; btn serve solo a firework (illumina gli altri pulsanti)
+  if (effects[name]) {
+    effects[name](x, off, name === 'firework' ? btn : undefined);
+  }
+});
+</script>
+</body>
+</html>

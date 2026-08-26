@@ -1,0 +1,8 @@
+# Node / Playwright
+node_modules/
+*.log
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
