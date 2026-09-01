@@ -15,7 +15,15 @@ Basta aprire `index.html` con un browser moderno (doppio click o trinalo nel bro
 index.html   ← tutto qui: HTML + CSS + JavaScript
 ```
 
-## 🎨 Gli 10 effetti
+## 🌐 Anteprima live (GitHub Pages)
+
+Vuoi vederla al volo senza scaricare nulla? Apri l'anteprima ospitata su **GitHub Pages**:
+
+[![Apri l'anteprima live](https://img.shields.io/badge/%E2%9A%A8%E2%AF%88_Apri_l%27ant%C3%ADmina_live-10881B?style=for-the-badge&logo=github)](https://cammo22.github.io/Pulsantiera/)
+
+Il sito serve `index.html` direttamente dal branch **main** (cartella radice `/`): ogni commit su main aggiorna automaticamente l'anteprima.
+
+## 🎨 Gli 12 effetti
 
 | # | Effetto | Descrizione |
 |---|---------|-------------|
@@ -75,7 +83,7 @@ I test caricano la pagina via `file://`, simulano il click sul bottone e verific
 - **HTML5 Canvas** — motore particellari condiviso (`requestAnimationFrame`)
 - **CSS3** — gradienti, animazioni (glitch / shake / pulse / rainbow / bounce)
 - **Vanilla JavaScript** — nessuna dipendenza in produzione
-- **Playwright** — test end-to-end del rendering sui 10 effetti
+- **Playwright** — test end-to-end del rendering sui 12 effetti
 - **Python** — generazione dei file di test
 
 ## 📁 Struttura

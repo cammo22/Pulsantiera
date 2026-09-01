@@ -362,10 +362,15 @@ function matrixRain(x,y){
 }
 
 function matrixLoop(){
-  // scia sfumante (rivela lo sfondo)
+  // scia sfumante (rivela lo sfondo scuro dietro le gocce)
   ctx.globalCompositeOperation = 'destination-out';
-  ctx.fillStyle = 'rgba(0,0,0,0.13)';
+  ctx.fillStyle = 'rgba(0,0,0,0.16)';
   ctx.fillRect(0,0,W,H);
+
+  // FONDAMENTALE: resettare su source-over prima di disegnare i glyph,
+  // altrimenti restano in "destination-out" e NON vengono disegnati mai
+  // (erano invisibili: cancellavano lo sfondo invece di dipingerlo).
+  ctx.globalCompositeOperation = 'source-over';
 
   if (matrixStreams){
     ctx.textAlign = 'center';
