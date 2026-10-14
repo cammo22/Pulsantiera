@@ -1,3 +1,8 @@
+<!-- discord-card -->
+<p align="center">
+  <a href="https://discord.gg/Njs52aacwq"><img src=".github/discord-card.svg" alt="Entra nella community DaProd su Discord" width="720"></a>
+</p>
+
 # ✨ Pulsantiera — Effetti Grafici Modulari
 
 Una demo di **12 effetti grafici** (confetti, fuochi d'artificio, matrix rain, ripple, supernova, vortice galattico, scarica neon, esplosione, aurora, magia pura, galaxy e arcobaleno) realizzata in **un unico file HTML**: Canvas 2D + CSS, zero dipendenze.
@@ -103,14 +108,3 @@ I test caricano la pagina via `file://`, simulano il click sul bottone e verific
 ## Licenza
 
 MIT
-
----
-
-<!-- discord-card -->
-## 💬 Community
-
-<p align="center">
-  <a href="https://discord.gg/Njs52aacwq"><img src=".github/discord-card.svg" alt="Entra nella community DaProd su Discord" width="720"></a>
-</p>
-
-Domande, idee, bug o solo voglia di chiacchierare? Entra nel **[Discord di DaProd](https://discord.gg/Njs52aacwq)**: ogni app ha la sua stanza e le nuove versioni arrivano in automatico.
