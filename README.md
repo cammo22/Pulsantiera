@@ -20,6 +20,7 @@ index.html   ← tutto qui: HTML + CSS + JavaScript
 Vuoi vederla al volo senza scaricare nulla? Apri l'anteprima ospitata su **GitHub Pages**:
 
 [![Apri l'anteprima live](https://img.shields.io/badge/%E2%9A%A8%E2%AF%88_Apri_l%27ant%C3%ADmina_live-10881B?style=for-the-badge&logo=github)](https://cammo22.github.io/Pulsantiera/)
+[![Discord](https://img.shields.io/badge/Discord-DaProd-5865F2?logo=discord&logoColor=white)](https://discord.gg/Njs52aacwq)
 
 Il sito serve `index.html` direttamente dal branch **main** (cartella radice `/`): ogni commit su main aggiorna automaticamente l'anteprima.
 
